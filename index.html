@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -178,7 +178,7 @@
     <script>
       /* ------------------ DATE + COUNTER ------------------ */
 
-      const startDate = new Date(2026, 0, 18, 0, 0, 0);
+      const startDate = new Date(2026, 0, 17, 0, 0, 0);
       const milestonesList = [7, 10, 15, 30, 60, 90, 180, 365, 548, 730, 1000];
       const quotes = ["Just imagine how long it took you to get here."];
 
@@ -207,7 +207,7 @@
 
         document.getElementById("monthLabel").textContent = new Date(
           year,
-          month
+          month,
         ).toLocaleString("default", { month: "long", year: "numeric" });
 
         const firstDay = new Date(year, month, 1).getDay();
@@ -226,7 +226,7 @@
 
           const date = new Date(year, month, d);
           const diffDays = Math.floor(
-            (date - startDate) / (1000 * 60 * 60 * 24)
+            (date - startDate) / (1000 * 60 * 60 * 24),
           );
 
           if (diffDays >= 0 && diffDays < daysCompleted) {
