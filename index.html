@@ -9,21 +9,29 @@
       body {
         font-family: Arial, sans-serif;
         text-align: center;
-        background: #000;
-        color: #ffd700;
+        background: #0e1117;
+        color: #e5e7eb;
         margin: 0;
         padding: 15px;
-        animation: breathe 6s ease-in-out infinite;
+        animation: breathe 9s ease-in-out infinite;
       }
 
       @keyframes breathe {
         0%,
         100% {
-          background-color: #000;
+          background-color: #0c0f14;
         }
         50% {
-          background-color: #050505;
+          background-color: #111827;
         }
+      }
+
+      /* Soft antique gold */
+      :root {
+        --gold: #e6c36a;
+        --gold-soft: rgba(230, 195, 106, 0.4);
+        --panel: #111827;
+        --border: #1f2933;
       }
 
       #catPic {
@@ -32,31 +40,40 @@
         left: 10px;
         width: 60px;
         border-radius: 12px;
-        box-shadow: 0 0 10px #ffd700;
+        box-shadow: 0 0 8px var(--gold-soft);
         cursor: pointer;
-        transition: transform 0.3s;
+        transition: transform 0.25s ease;
         z-index: 999;
+        filter: saturate(0.9);
       }
 
       #catPic:hover {
-        transform: scale(1.1) rotate(-3deg);
+        transform: scale(1.05);
       }
 
       .counter {
         font-size: 2em;
         margin: 10px 0;
+        color: var(--gold);
       }
 
       .daysPassed {
         font-weight: bold;
         font-size: 1.2em;
-        text-shadow: 0 0 5px #ffd700;
+        color: var(--gold);
+        text-shadow: 0 0 6px var(--gold-soft);
       }
 
       #motivation {
         font-style: italic;
         margin-bottom: 15px;
-        opacity: 0.9;
+        opacity: 0.85;
+        color: #9ca3af;
+      }
+
+      h2 {
+        color: var(--gold);
+        margin-top: 25px;
       }
 
       .milestones {
@@ -69,16 +86,18 @@
 
       .milestone {
         padding: 6px 12px;
-        border: 2px solid #ffd700;
+        border: 1px solid var(--border);
         border-radius: 8px;
-        background: #111;
+        background: var(--panel);
         font-size: 0.9em;
+        color: #d1d5db;
       }
 
       .milestone.reached {
-        border-color: #00ff00;
-        background: #003300;
-        box-shadow: 0 0 8px #00ff00;
+        border-color: #10b981;
+        background: #062a24;
+        box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+        color: #a7f3d0;
       }
 
       .calendar-container {
@@ -94,11 +113,11 @@
       }
 
       .calendar-header button {
-        background: #ffd700;
-        color: #000;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 5px;
+        background: var(--panel);
+        color: var(--gold);
+        border: 1px solid var(--border);
+        padding: 6px 12px;
+        border-radius: 6px;
         font-weight: bold;
         cursor: pointer;
       }
@@ -111,16 +130,17 @@
 
       .day {
         padding: 6px;
-        border: 1px solid #ffd700;
+        border: 1px solid var(--border);
         border-radius: 6px;
-        background: #111;
+        background: var(--panel);
         font-size: 0.85em;
         position: relative;
+        color: #d1d5db;
       }
 
       .day.completed {
-        background: #003300;
-        box-shadow: 0 0 8px #00ff00;
+        background: #062a24;
+        box-shadow: 0 0 6px rgba(16, 185, 129, 0.35);
       }
 
       .day.completed::after {
@@ -129,7 +149,7 @@
         top: 2px;
         right: 4px;
         font-size: 0.7em;
-        color: #00ff00;
+        color: #34d399;
       }
 
       .day.empty {
@@ -178,7 +198,7 @@
     <script>
       /* ------------------ DATE + COUNTER ------------------ */
 
-      const startDate = new Date(2026, 0, 18, 0, 0, 0);
+      const startDate = new Date(2025, 9, 16, 0, 0, 0);
       const milestonesList = [7, 10, 15, 30, 60, 90, 180, 365, 548, 730, 1000];
       const quotes = ["Just imagine how long it took you to get here."];
 
