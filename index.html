@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Day Counter</title>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #000;
+        color: #ffd700;
+        margin: 0;
+        padding: 15px;
+        animation: breathe 6s ease-in-out infinite;
+      }
+
+      @keyframes breathe {
+        0%,
+        100% {
+          background-color: #000;
+        }
+        50% {
+          background-color: #050505;
+        }
+      }
+
+      #catPic {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        width: 60px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px #ffd700;
+        cursor: pointer;
+        transition: transform 0.3s;
+        z-index: 999;
+      }
+
+      #catPic:hover {
+        transform: scale(1.1) rotate(-3deg);
+      }
+
+      .counter {
+        font-size: 2em;
+        margin: 10px 0;
+      }
+
+      .daysPassed {
+        font-weight: bold;
+        font-size: 1.2em;
+        text-shadow: 0 0 5px #ffd700;
+      }
+
+      #motivation {
+        font-style: italic;
+        margin-bottom: 15px;
+        opacity: 0.9;
+      }
+
+      .milestones {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .milestone {
+        padding: 6px 12px;
+        border: 2px solid #ffd700;
+        border-radius: 8px;
+        background: #111;
+        font-size: 0.9em;
+      }
+
+      .milestone.reached {
+        border-color: #00ff00;
+        background: #003300;
+        box-shadow: 0 0 8px #00ff00;
+      }
+
+      .calendar-container {
+        max-width: 100%;
+        margin: auto;
+      }
+
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .calendar-header button {
+        background: #ffd700;
+        color: #000;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+
+      .day {
+        padding: 6px;
+        border: 1px solid #ffd700;
+        border-radius: 6px;
+        background: #111;
+        font-size: 0.85em;
+        position: relative;
+      }
+
+      .day.completed {
+        background: #003300;
+        box-shadow: 0 0 8px #00ff00;
+      }
+
+      .day.completed::after {
+        content: "✔";
+        position: absolute;
+        top: 2px;
+        right: 4px;
+        font-size: 0.7em;
+        color: #00ff00;
+      }
+
+      .day.empty {
+        background: transparent;
+        border: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Cat control -->
+    <img src="cat.jpeg" id="catPic" alt="cat" />
+
+    <div class="daysPassed" id="daysPassed"></div>
+    <p id="startDate"></p>
+    <div class="counter" id="counter">Loading...</div>
+    <p id="motivation"></p>
+
+    <h2>Milestones</h2>
+    <div class="milestones" id="milestones"></div>
+
+    <h2>Calendar</h2>
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <button id="prevMonth">&larr;</button>
+        <h3 id="monthLabel"></h3>
+        <button id="nextMonth">&rarr;</button>
+      </div>
+
+      <div class="calendar">
+        <div class="day">Sun</div>
+        <div class="day">Mon</div>
+        <div class="day">Tue</div>
+        <div class="day">Wed</div>
+        <div class="day">Thu</div>
+        <div class="day">Fri</div>
+        <div class="day">Sat</div>
+      </div>
+
+      <div class="calendar" id="calendar"></div>
+    </div>
+
+    <!-- Audio -->
+    <audio id="themeMusic"></audio>
+
+    <script>
+      /* ------------------ DATE + COUNTER ------------------ */
+
+      const startDate = new Date(2026, 0, 18, 0, 0, 0);
+      const milestonesList = [7, 10, 15, 30, 60, 90, 180, 365, 548, 730, 1000];
+      const quotes = ["Just imagine how long it took you to get here."];
+
+      const daysPassedEl = document.getElementById("daysPassed");
+      const startDateEl = document.getElementById("startDate");
+      const milestonesContainer = document.getElementById("milestones");
+
+      startDateEl.textContent =
+        "Start Date: " +
+        startDate.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
+
+      milestonesList.forEach((d) => {
+        const div = document.createElement("div");
+        div.className = "milestone";
+        div.id = "milestone-" + d;
+        div.textContent = d + " days";
+        milestonesContainer.appendChild(div);
+      });
+
+      let currentMonth = new Date().getMonth();
+      let currentYear = new Date().getFullYear();
+
+      function renderCalendar(month, year, daysCompleted) {
+        const cal = document.getElementById("calendar");
+        cal.innerHTML = "";
+
+        document.getElementById("monthLabel").textContent = new Date(
+          year,
+          month
+        ).toLocaleString("default", { month: "long", year: "numeric" });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+
+        for (let i = 0; i < firstDay; i++) {
+          cal.appendChild(document.createElement("div")).className =
+            "day empty";
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          const cell = document.createElement("div");
+          cell.className = "day";
+          cell.textContent = d;
+
+          const date = new Date(year, month, d);
+          const diffDays = Math.floor(
+            (date - startDate) / (1000 * 60 * 60 * 24)
+          );
+
+          if (diffDays >= 0 && diffDays < daysCompleted) {
+            cell.classList.add("completed");
+          }
+
+          if (date.toDateString() === today.toDateString()) {
+            cell.style.border = "2px solid #ffd700";
+            cell.style.boxShadow = "0 0 10px #ffd700";
+          }
+
+          cal.appendChild(cell);
+        }
+      }
+
+      function updateCounter() {
+        const now = new Date();
+        const diff = now - startDate;
+        if (diff < 0) return;
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / 1000 / 3600) % 24);
+        const mins = Math.floor((diff / 1000 / 60) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
+
+        daysPassedEl.textContent = `It's been ${days} day(s)!!`;
+        counter.textContent = `${days}:${hours}:${mins}:${secs}`;
+        motivation.textContent = quotes[0];
+
+        milestonesList.forEach((d) => {
+          if (days >= d)
+            document.getElementById("milestone-" + d)?.classList.add("reached");
+        });
+
+        renderCalendar(currentMonth, currentYear, days);
+      }
+
+      prevMonth.onclick = () => {
+        currentMonth--;
+        updateCounter();
+      };
+      nextMonth.onclick = () => {
+        currentMonth++;
+        updateCounter();
+      };
+
+      setInterval(updateCounter, 1000);
+      updateCounter();
+
+      /* ------------------ AUDIO (CAT ONLY) ------------------ */
+
+      const audio = document.getElementById("themeMusic");
+
+      const songs = [
+        "song1.mp3",
+        "song2.mp3",
+        "song3.mp3",
+        "song4.mp3",
+        "song5.mp3",
+        "song6.mp3",
+        "song7.mp3",
+        "song8.mp3",
+        "song9.mp3",
+        "song10.mp3",
+        "song11.mp3",
+        "song12.mp3",
+        "song13.mp3",
+        "song14.mp3",
+        "song15.mp3",
+      ];
+
+      let currentSongIndex = 0;
+      let musicStarted = false;
+
+      audio.loop = true;
+
+      document.getElementById("catPic").addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        if (!musicStarted) {
+          audio.src = songs[currentSongIndex];
+          audio.play();
+          musicStarted = true;
+          return;
+        }
+
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        audio.src = songs[currentSongIndex];
+        audio.play();
+      });
+    </script>
+  </body>
+</html>
