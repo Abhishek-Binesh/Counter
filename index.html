@@ -26,7 +26,6 @@
         }
       }
 
-      /* Soft antique gold */
       :root {
         --gold: #e6c36a;
         --gold-soft: rgba(230, 195, 106, 0.4);
@@ -49,6 +48,17 @@
 
       #catPic:hover {
         transform: scale(1.05);
+      }
+
+      /* 🔢 Tap counter */
+      #tapCounter {
+        position: fixed;
+        top: 90px;
+        left: 10px;
+        font-size: 0.85em;
+        color: var(--gold);
+        opacity: 0.85;
+        text-shadow: 0 0 4px var(--gold-soft);
       }
 
       .counter {
@@ -162,6 +172,7 @@
   <body>
     <!-- Cat control -->
     <img src="cat.jpeg" id="catPic" alt="cat" />
+    <div id="tapCounter">Tap: 0</div>
 
     <div class="daysPassed" id="daysPassed"></div>
     <p id="startDate"></p>
@@ -198,7 +209,7 @@
     <script>
       /* ------------------ DATE + COUNTER ------------------ */
 
-      const startDate = new Date(2026, 0, 18, 0, 0, 0);
+      const startDate = new Date(2025, 0, 18, 0, 0, 0);
       const milestonesList = [7, 10, 15, 30, 60, 90, 180, 365, 548, 730, 1000];
       const quotes = ["Just imagine how long it took you to get here."];
 
@@ -254,8 +265,8 @@
           }
 
           if (date.toDateString() === today.toDateString()) {
-            cell.style.border = "2px solid #ffd700";
-            cell.style.boxShadow = "0 0 10px #ffd700";
+            cell.style.border = "2px solid var(--gold)";
+            cell.style.boxShadow = "0 0 10px var(--gold-soft)";
           }
 
           cal.appendChild(cell);
@@ -299,6 +310,7 @@
       /* ------------------ AUDIO (CAT ONLY) ------------------ */
 
       const audio = document.getElementById("themeMusic");
+      const tapCounterEl = document.getElementById("tapCounter");
 
       const songs = [
         "song1.mp3",
@@ -319,26 +331,22 @@
         "song16.mp3",
         "song17.mp3",
         "song18.mp3",
+        "song19.mp3",
       ];
 
-      let currentSongIndex = 0;
-      let musicStarted = false;
-
+      let tapCount = 0;
       audio.loop = true;
 
       document.getElementById("catPic").addEventListener("click", (e) => {
         e.stopPropagation();
 
-        if (!musicStarted) {
-          audio.src = songs[currentSongIndex];
-          audio.play();
-          musicStarted = true;
-          return;
-        }
+        tapCount++;
+        const songIndex = (tapCount - 1) % songs.length;
 
-        currentSongIndex = (currentSongIndex + 1) % songs.length;
-        audio.src = songs[currentSongIndex];
+        audio.src = songs[songIndex];
         audio.play();
+
+        tapCounterEl.textContent = `Tap: ${songIndex + 1}`;
       });
     </script>
   </body>
