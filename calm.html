@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calm</title>
+
+    <style>
+      body {
+        margin: 0;
+        height: 100vh;
+        background: #0c0f14;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: Arial, sans-serif;
+        color: #e5e7eb;
+        overflow: hidden;
+        animation: breatheBg 12s ease-in-out infinite;
+      }
+
+      @keyframes breatheBg {
+        0%,
+        100% {
+          background-color: #0c0f14;
+        }
+        50% {
+          background-color: #111827;
+        }
+      }
+
+      .container {
+        text-align: center;
+      }
+
+      .circle {
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: rgba(230, 195, 106, 0.08);
+        border: 2px solid rgba(230, 195, 106, 0.35);
+        margin: 0 auto 28px;
+        transition: transform 6s ease-in-out;
+      }
+
+      .text {
+        font-size: 1.5em;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+      }
+
+      .timer {
+        font-size: 0.9em;
+        opacity: 0.6;
+      }
+
+      .back {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: transparent;
+        border: 1px solid #374151;
+        color: #9ca3af;
+        padding: 6px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .back:hover {
+        color: #e5e7eb;
+        border-color: #e6c36a;
+      }
+
+      /* Tap to start overlay */
+      #startOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(12, 15, 20, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #9ca3af;
+        font-size: 1.2em;
+        letter-spacing: 1px;
+        cursor: pointer;
+        z-index: 9999;
+        animation: fadePulse 2.5s ease-in-out infinite;
+      }
+
+      @keyframes fadePulse {
+        0%,
+        100% {
+          opacity: 0.6;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="circle" id="circle"></div>
+      <div class="text" id="instruction">Breathe In</div>
+      <div class="timer" id="timer">4</div>
+    </div>
+
+    <button class="back" onclick="history.back()">Back</button>
+
+    <!-- Calm background sound -->
+    <audio id="calmSound" src="calm.mp3" loop></audio>
+
+    <!-- Tap to begin overlay -->
+    <div id="startOverlay">Tap anywhere to begin</div>
+
+    <script>
+      /* ---- Breathing logic (4–6) ---- */
+      const inhaleTime = 4;
+      const exhaleTime = 6;
+
+      let phase = "in";
+      let timeLeft = inhaleTime;
+
+      const instructionEl = document.getElementById("instruction");
+      const timerEl = document.getElementById("timer");
+      const circle = document.getElementById("circle");
+
+      function switchPhase() {
+        if (phase === "in") {
+          phase = "out";
+          timeLeft = exhaleTime;
+          instructionEl.textContent = "Breathe Out";
+          circle.style.transform = "scale(0.85)";
+        } else {
+          phase = "in";
+          timeLeft = inhaleTime;
+          instructionEl.textContent = "Breathe In";
+          circle.style.transform = "scale(1)";
+        }
+      }
+
+      function tick() {
+        timerEl.textContent = timeLeft;
+        timeLeft--;
+
+        if (timeLeft < 0) {
+          switchPhase();
+        }
+      }
+
+      circle.style.transform = "scale(1)";
+      setInterval(tick, 1000);
+
+      /* ---- Audio start on user tap ---- */
+      const audio = document.getElementById("calmSound");
+      const overlay = document.getElementById("startOverlay");
+
+      overlay.addEventListener("click", () => {
+        audio.volume = 0.3;
+        audio.play();
+        overlay.remove();
+      });
+    </script>
+  </body>
+</html>
