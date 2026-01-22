@@ -6,48 +6,57 @@
     <title>Day Counter</title>
 
     <style>
+      :root {
+        --gold: #e6c36a;
+        --gold-soft: rgba(230, 195, 106, 0.35);
+        --panel: rgba(17, 24, 39, 0.88);
+        --border: #1f2937;
+        --bg1: #0b1020;
+        --bg2: #0f172a;
+        --bg3: #020617;
+      }
+
       body {
         font-family: Arial, sans-serif;
         text-align: center;
-        background: #0e1117;
-        color: #e5e7eb;
         margin: 0;
         padding: 15px;
-        animation: breathe 9s ease-in-out infinite;
+        color: #e5e7eb;
+
+        background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
+        background-size: 300% 300%;
+        animation: breatheBg 18s ease-in-out infinite;
       }
 
-      @keyframes breathe {
-        0%,
-        100% {
-          background-color: #0c0f14;
+      @keyframes breatheBg {
+        0% {
+          background-position: 0% 50%;
         }
         50% {
-          background-color: #111827;
+          background-position: 100% 50%;
         }
-      }
-
-      :root {
-        --gold: #e6c36a;
-        --gold-soft: rgba(230, 195, 106, 0.4);
-        --panel: #111827;
-        --border: #1f2933;
+        100% {
+          background-position: 0% 50%;
+        }
       }
 
       #catPic {
         position: fixed;
-        top: 10px;
-        left: 10px;
-        width: 60px;
-        border-radius: 12px;
-        box-shadow: 0 0 8px var(--gold-soft);
+        top: 12px;
+        left: 12px;
+        width: 56px;
+        border-radius: 14px;
+        box-shadow: 0 0 10px var(--gold-soft);
         cursor: pointer;
-        transition: transform 0.25s ease;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease;
         z-index: 999;
-        filter: saturate(0.9);
       }
 
       #catPic:hover {
-        transform: scale(1.05);
+        transform: scale(1.06);
+        box-shadow: 0 0 14px var(--gold-soft);
       }
 
       .counter {
@@ -58,21 +67,21 @@
 
       .daysPassed {
         font-weight: bold;
-        font-size: 1.2em;
+        font-size: 1.25em;
         color: var(--gold);
-        text-shadow: 0 0 6px var(--gold-soft);
+        text-shadow: 0 0 8px var(--gold-soft);
       }
 
       #motivation {
         font-style: italic;
-        margin-bottom: 15px;
-        opacity: 0.85;
+        margin-bottom: 18px;
+        opacity: 0.75;
         color: #9ca3af;
       }
 
       h2 {
         color: var(--gold);
-        margin-top: 25px;
+        margin-top: 28px;
       }
 
       .milestones {
@@ -80,22 +89,23 @@
         flex-wrap: wrap;
         justify-content: center;
         gap: 8px;
-        margin-bottom: 20px;
+        margin-bottom: 22px;
       }
 
       .milestone {
         padding: 6px 12px;
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 10px;
         background: var(--panel);
         font-size: 0.9em;
         color: #d1d5db;
+        backdrop-filter: blur(4px);
       }
 
       .milestone.reached {
         border-color: #10b981;
-        background: #062a24;
-        box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+        background: rgba(6, 42, 36, 0.9);
+        box-shadow: 0 0 6px rgba(16, 185, 129, 0.35);
         color: #a7f3d0;
       }
 
@@ -108,15 +118,15 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
       }
 
       .calendar-header button {
         background: var(--panel);
         color: var(--gold);
         border: 1px solid var(--border);
-        padding: 6px 12px;
-        border-radius: 6px;
+        padding: 6px 14px;
+        border-radius: 8px;
         font-weight: bold;
         cursor: pointer;
       }
@@ -124,13 +134,13 @@
       .calendar {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 4px;
+        gap: 6px;
       }
 
       .day {
-        padding: 6px;
+        padding: 7px;
         border: 1px solid var(--border);
-        border-radius: 6px;
+        border-radius: 8px;
         background: var(--panel);
         font-size: 0.85em;
         position: relative;
@@ -138,8 +148,8 @@
       }
 
       .day.completed {
-        background: #062a24;
-        box-shadow: 0 0 6px rgba(16, 185, 129, 0.35);
+        background: rgba(6, 42, 36, 0.9);
+        box-shadow: 0 0 6px rgba(16, 185, 129, 0.3);
       }
 
       .day.completed::after {
@@ -159,7 +169,6 @@
   </head>
 
   <body>
-    <!-- Calm entry -->
     <img src="music.jpg" id="catPic" alt="calm" />
 
     <div class="daysPassed" id="daysPassed"></div>
@@ -192,10 +201,7 @@
     </div>
 
     <script>
-      /* ------------------ DATE + COUNTER ------------------ */
-
-      const startDate = new Date(2026, 0, 22, 0, 0, 0);
-
+      const startDate = new Date(2025, 0, 22, 0, 0, 0);
       const milestonesList = [
         1, 5, 7, 10, 15, 30, 45, 60, 75, 90, 125, 180, 365, 548, 730, 1000,
       ];
@@ -234,8 +240,9 @@
         const today = new Date();
 
         for (let i = 0; i < firstDay; i++) {
-          cal.appendChild(document.createElement("div")).className =
-            "day empty";
+          const empty = document.createElement("div");
+          empty.className = "day empty";
+          cal.appendChild(empty);
         }
 
         for (let d = 1; d <= daysInMonth; d++) {
@@ -276,8 +283,9 @@
         motivation.textContent = quotes[0];
 
         milestonesList.forEach((d) => {
-          if (days >= d)
+          if (days >= d) {
             document.getElementById("milestone-" + d)?.classList.add("reached");
+          }
         });
 
         renderCalendar(currentMonth, currentYear, days);
@@ -287,6 +295,7 @@
         currentMonth--;
         updateCounter();
       };
+
       nextMonth.onclick = () => {
         currentMonth++;
         updateCounter();
@@ -294,8 +303,6 @@
 
       setInterval(updateCounter, 1000);
       updateCounter();
-
-      /* ------------------ CALM PAGE LINK ------------------ */
 
       document.getElementById("catPic").onclick = () => {
         window.location.href = "calm.html";

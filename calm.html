@@ -45,7 +45,6 @@
 
       .text {
         font-size: 1.5em;
-        letter-spacing: 1px;
         margin-bottom: 8px;
       }
 
@@ -54,48 +53,17 @@
         opacity: 0.6;
       }
 
-      .back {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: transparent;
-        border: 1px solid #374151;
-        color: #9ca3af;
-        padding: 6px 14px;
-        border-radius: 8px;
-        cursor: pointer;
-      }
-
-      .back:hover {
-        color: #e5e7eb;
-        border-color: #e6c36a;
-      }
-
-      /* Tap to start overlay */
       #startOverlay {
         position: fixed;
         inset: 0;
-        background: rgba(12, 15, 20, 0.85);
+        background: rgba(12, 15, 20, 0.9);
         display: flex;
         align-items: center;
         justify-content: center;
         color: #9ca3af;
         font-size: 1.2em;
-        letter-spacing: 1px;
         cursor: pointer;
         z-index: 9999;
-        animation: fadePulse 2.5s ease-in-out infinite;
-      }
-
-      @keyframes fadePulse {
-        0%,
-        100% {
-          opacity: 0.6;
-        }
-        50% {
-          opacity: 1;
-        }
       }
     </style>
   </head>
@@ -107,16 +75,10 @@
       <div class="timer" id="timer">4</div>
     </div>
 
-    <button class="back" onclick="history.back()">Back</button>
-
-    <!-- Calm background sound -->
     <audio id="calmSound" src="calm.mp3" loop></audio>
-
-    <!-- Tap to begin overlay -->
     <div id="startOverlay">Tap anywhere to begin</div>
 
     <script>
-      /* ---- Breathing logic (4–6) ---- */
       const inhaleTime = 4;
       const exhaleTime = 6;
 
@@ -127,40 +89,69 @@
       const timerEl = document.getElementById("timer");
       const circle = document.getElementById("circle");
 
+      /* ---------- Web Audio tones ---------- */
+      let audioCtx;
+
+      function playTone(freq) {
+        if (!audioCtx)
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.value = freq;
+
+        gain.gain.setValueAtTime(0, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 0.05);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.6);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.7);
+      }
+
+      function toneIn() {
+        playTone(520); // higher = inhale
+      }
+
+      function toneOut() {
+        playTone(260); // lower = exhale
+      }
+
+      /* ---------- Breathing logic ---------- */
       function switchPhase() {
         if (phase === "in") {
           phase = "out";
           timeLeft = exhaleTime;
           instructionEl.textContent = "Breathe Out";
           circle.style.transform = "scale(0.85)";
+          toneOut();
         } else {
           phase = "in";
           timeLeft = inhaleTime;
           instructionEl.textContent = "Breathe In";
           circle.style.transform = "scale(1)";
+          toneIn();
         }
       }
 
       function tick() {
         timerEl.textContent = timeLeft;
         timeLeft--;
-
-        if (timeLeft < 0) {
-          switchPhase();
-        }
+        if (timeLeft < 0) switchPhase();
       }
 
-      circle.style.transform = "scale(1)";
       setInterval(tick, 1000);
 
-      /* ---- Audio start on user tap ---- */
-      const audio = document.getElementById("calmSound");
-      const overlay = document.getElementById("startOverlay");
-
-      overlay.addEventListener("click", () => {
-        audio.volume = 0.3;
-        audio.play();
-        overlay.remove();
+      /* ---------- Start ---------- */
+      document.getElementById("startOverlay").addEventListener("click", () => {
+        document.getElementById("calmSound").volume = 0.25;
+        document.getElementById("calmSound").play();
+        toneIn();
+        document.getElementById("startOverlay").remove();
       });
     </script>
   </body>
