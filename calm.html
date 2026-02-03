@@ -6,152 +6,86 @@
     <title>Calm</title>
 
     <style>
+      /* ---------- Base ---------- */
       body {
         margin: 0;
         height: 100vh;
-        background: #0c0f14;
+        background: url("bg-desktop.jpg") center / cover no-repeat;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: Arial, sans-serif;
-        color: #e5e7eb;
         overflow: hidden;
-        animation: breatheBg 12s ease-in-out infinite;
+        font-family: Arial, sans-serif;
       }
 
-      @keyframes breatheBg {
-        0%,
-        100% {
-          background-color: #0c0f14;
-        }
-        50% {
-          background-color: #111827;
+      /* ---------- Mobile background ---------- */
+      @media (max-width: 768px) {
+        body {
+          background: url("bg-mobile.jpg") center / cover no-repeat;
         }
       }
 
-      .container {
-        text-align: center;
-      }
-
-      .circle {
-        width: 240px;
-        height: 240px;
-        border-radius: 50%;
-        background: rgba(230, 195, 106, 0.08);
-        border: 2px solid rgba(230, 195, 106, 0.35);
-        margin: 0 auto 28px;
-        transition: transform 6s ease-in-out;
-      }
-
-      .text {
-        font-size: 1.5em;
-        margin-bottom: 8px;
-      }
-
-      .timer {
-        font-size: 0.9em;
-        opacity: 0.6;
-      }
-
+      /* ---------- Start overlay ---------- */
       #startOverlay {
         position: fixed;
         inset: 0;
-        background: rgba(12, 15, 20, 0.9);
+        background: rgba(0, 0, 0, 0.55);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #9ca3af;
+        color: #e5e7eb;
         font-size: 1.2em;
         cursor: pointer;
         z-index: 9999;
+      }
+
+      /* ---------- Back button ---------- */
+      .back-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        padding: 10px 14px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #e5e7eb;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 0.9em;
+        z-index: 1000;
+      }
+
+      .back-btn:hover {
+        background: rgba(0, 0, 0, 0.7);
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <div class="circle" id="circle"></div>
-      <div class="text" id="instruction">Breathe In</div>
-      <div class="timer" id="timer">4</div>
-    </div>
+    <!-- Back to calling page -->
+    <a href="index.html" class="back-btn">← Back</a>
 
-    <audio id="calmSound" src="calm.mp3" loop></audio>
+    <!-- Calm music -->
+    <audio id="calmSound" src="calm.mp3"></audio>
+
+    <!-- Start overlay -->
     <div id="startOverlay">Tap anywhere to begin</div>
 
     <script>
-      const inhaleTime = 4;
-      const exhaleTime = 6;
+      const audio = document.getElementById("calmSound");
+      const overlay = document.getElementById("startOverlay");
 
-      let phase = "in";
-      let timeLeft = inhaleTime;
+      // 5-second pause before replay
+      audio.addEventListener("ended", () => {
+        setTimeout(() => {
+          audio.currentTime = 0;
+          audio.play();
+        }, 5000);
+      });
 
-      const instructionEl = document.getElementById("instruction");
-      const timerEl = document.getElementById("timer");
-      const circle = document.getElementById("circle");
-
-      /* ---------- Web Audio tones ---------- */
-      let audioCtx;
-
-      function playTone(freq) {
-        if (!audioCtx)
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = "sine";
-        osc.frequency.value = freq;
-
-        gain.gain.setValueAtTime(0, audioCtx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.25, audioCtx.currentTime + 0.05);
-        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.6);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.7);
-      }
-
-      function toneIn() {
-        playTone(450); // higher = inhale
-      }
-
-      function toneOut() {
-        playTone(300); // lower = exhale
-      }
-
-      /* ---------- Breathing logic ---------- */
-      function switchPhase() {
-        if (phase === "in") {
-          phase = "out";
-          timeLeft = exhaleTime;
-          instructionEl.textContent = "Breathe Out";
-          circle.style.transform = "scale(0.85)";
-          toneOut();
-        } else {
-          phase = "in";
-          timeLeft = inhaleTime;
-          instructionEl.textContent = "Breathe In";
-          circle.style.transform = "scale(1)";
-          toneIn();
-        }
-      }
-
-      function tick() {
-        timerEl.textContent = timeLeft;
-        timeLeft--;
-        if (timeLeft < 0) switchPhase();
-      }
-
-      setInterval(tick, 1000);
-
-      /* ---------- Start ---------- */
-      document.getElementById("startOverlay").addEventListener("click", () => {
-        document.getElementById("calmSound").volume = 0.3;
-        document.getElementById("calmSound").play();
-        toneIn();
-        document.getElementById("startOverlay").remove();
+      // Start on user interaction
+      overlay.addEventListener("click", () => {
+        audio.volume = 0.4;
+        audio.play();
+        overlay.remove();
       });
     </script>
   </body>
