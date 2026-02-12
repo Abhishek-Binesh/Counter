@@ -5,86 +5,179 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Calm</title>
 
+    <!-- Elegant Serif Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-      /* ---------- Base ---------- */
+      :root {
+        --panel: rgba(255, 255, 255, 0.7);
+        --border: rgba(0, 0, 0, 0.08);
+
+        --bg1: #fbc2eb;
+        --bg2: #a6c1ee;
+        --bg3: #fdfbfb;
+      }
+
+      /* ---------- Background ---------- */
       body {
         margin: 0;
         height: 100vh;
-        background: url("bg-desktop.jpg") center / cover no-repeat;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
-        font-family: Arial, sans-serif;
+
+        font-family: "Cormorant Garamond", serif;
+        color: #000;
+
+        background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
+        background-size: 300% 300%;
+        animation: breatheBg 20s ease-in-out infinite;
       }
 
-      /* ---------- Mobile background ---------- */
-      @media (max-width: 768px) {
-        body {
-          background: url("bg-mobile.jpg") center / cover no-repeat;
+      @keyframes breatheBg {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
         }
       }
 
-      /* ---------- Start overlay ---------- */
+      /* ---------- Start Overlay ---------- */
       #startOverlay {
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.55);
+        background: rgba(0, 0, 0, 0.45);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #e5e7eb;
-        font-size: 1.2em;
+        font-size: 1.5em;
         cursor: pointer;
         z-index: 9999;
+        color: #fff;
+        letter-spacing: 1px;
       }
 
-      /* ---------- Back button ---------- */
+      /* ---------- Back Button ---------- */
       .back-btn {
         position: fixed;
         top: 20px;
         left: 20px;
-        padding: 10px 14px;
-        background: rgba(0, 0, 0, 0.5);
-        color: #e5e7eb;
+        padding: 10px 16px;
+        background: var(--panel);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: 12px;
         text-decoration: none;
-        border-radius: 6px;
-        font-size: 0.9em;
-        z-index: 1000;
+        font-weight: 600;
+        color: #000;
       }
 
-      .back-btn:hover {
-        background: rgba(0, 0, 0, 0.7);
+      /* ---------- Stopwatch ---------- */
+      .stopwatch {
+        display: flex;
+        gap: 15px;
+      }
+
+      .time-box {
+        background: var(--panel);
+        backdrop-filter: blur(12px);
+        padding: 20px 24px;
+        border-radius: 16px;
+        font-size: 2.2em;
+        font-weight: 700;
+        min-width: 80px;
+        border: 1px solid var(--border);
+        perspective: 600px;
+      }
+
+      .flip {
+        animation: flipAnim 0.6s ease;
+      }
+
+      @keyframes flipAnim {
+        0% {
+          transform: rotateX(0deg);
+        }
+        50% {
+          transform: rotateX(-90deg);
+        }
+        100% {
+          transform: rotateX(0deg);
+        }
       }
     </style>
   </head>
 
   <body>
-    <!-- Back to calling page -->
     <a href="index.html" class="back-btn">← Back</a>
 
-    <!-- Calm music -->
-    <audio id="calmSound" src="calm.mp3"></audio>
+    <!-- Music -->
+    <audio id="calmSound" src="calm.mp3" loop></audio>
 
-    <!-- Start overlay -->
+    <!-- Start Overlay -->
     <div id="startOverlay">Tap anywhere to begin</div>
+
+    <!-- Stopwatch -->
+    <div class="stopwatch">
+      <div class="time-box" id="hours">00</div>
+      <div class="time-box" id="minutes">00</div>
+      <div class="time-box" id="seconds">00</div>
+    </div>
 
     <script>
       const audio = document.getElementById("calmSound");
       const overlay = document.getElementById("startOverlay");
 
-      // 5-second pause before replay
-      audio.addEventListener("ended", () => {
-        setTimeout(() => {
-          audio.currentTime = 0;
-          audio.play();
-        }, 5000);
-      });
+      const hoursEl = document.getElementById("hours");
+      const minutesEl = document.getElementById("minutes");
+      const secondsEl = document.getElementById("seconds");
 
-      // Start on user interaction
+      let seconds = 0;
+      let interval = null;
+
+      /* Zero padding */
+      function pad(val) {
+        return String(val).padStart(2, "0");
+      }
+
+      /* Flip update */
+      function flipUpdate(element, value) {
+        if (element.textContent !== value) {
+          element.classList.remove("flip");
+          void element.offsetWidth;
+          element.textContent = value;
+          element.classList.add("flip");
+        }
+      }
+
+      /* Start stopwatch */
+      function startStopwatch() {
+        interval = setInterval(() => {
+          seconds++;
+
+          const hrs = Math.floor(seconds / 3600);
+          const mins = Math.floor((seconds % 3600) / 60);
+          const secs = seconds % 60;
+
+          flipUpdate(hoursEl, pad(hrs));
+          flipUpdate(minutesEl, pad(mins));
+          flipUpdate(secondsEl, pad(secs));
+        }, 1000);
+      }
+
+      /* Start on first tap */
       overlay.addEventListener("click", () => {
         audio.volume = 0.4;
         audio.play();
+        startStopwatch();
         overlay.remove();
       });
     </script>

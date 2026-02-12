@@ -5,27 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Day Counter</title>
 
+    <!-- Elegant Serif Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
       :root {
-        --gold: #e6c36a;
-        --gold-soft: rgba(230, 195, 106, 0.35);
-        --panel: rgba(17, 24, 39, 0.88);
-        --border: #1f2937;
-        --bg1: #0b1020;
-        --bg2: #0f172a;
-        --bg3: #020617;
+        --panel: rgba(255, 255, 255, 0.7);
+        --border: rgba(0, 0, 0, 0.08);
+
+        --bg1: #fbc2eb;
+        --bg2: #a6c1ee;
+        --bg3: #fdfbfb;
       }
 
       body {
-        font-family: Arial, sans-serif;
+        font-family: "Cormorant Garamond", serif;
         text-align: center;
         margin: 0;
-        padding: 15px;
-        color: #e5e7eb;
+        padding: 25px;
+        color: #000;
+        letter-spacing: 0.5px;
 
         background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
         background-size: 300% 300%;
-        animation: breatheBg 18s ease-in-out infinite;
+        animation: breatheBg 20s ease-in-out infinite;
       }
 
       @keyframes breatheBg {
@@ -40,73 +46,83 @@
         }
       }
 
-      #catPic {
-        position: fixed;
-        top: 12px;
-        left: 12px;
-        width: 56px;
-        border-radius: 14px;
-        box-shadow: 0 0 10px var(--gold-soft);
-        cursor: pointer;
-        transition:
-          transform 0.25s ease,
-          box-shadow 0.25s ease;
-        z-index: 999;
-      }
-
-      #catPic:hover {
-        transform: scale(1.06);
-        box-shadow: 0 0 14px var(--gold-soft);
-      }
-
-      .counter {
-        font-size: 2em;
-        margin: 10px 0;
-        color: var(--gold);
+      h2,
+      h3 {
+        font-weight: 700;
+        color: #000;
+        letter-spacing: 1px;
       }
 
       .daysPassed {
-        font-weight: bold;
-        font-size: 1.25em;
-        color: var(--gold);
-        text-shadow: 0 0 8px var(--gold-soft);
+        font-size: 1.6em;
+        font-weight: 700;
+        color: #000;
+      }
+
+      .counter {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        margin: 20px 0;
+      }
+
+      .time-box {
+        background: var(--panel);
+        backdrop-filter: blur(12px);
+        padding: 16px 20px;
+        border-radius: 16px;
+        font-size: 1.8em;
+        font-weight: 700;
+        min-width: 70px;
+        border: 1px solid var(--border);
+        perspective: 600px;
+        color: #000;
+      }
+
+      .flip {
+        animation: flipAnim 0.6s ease;
+      }
+
+      @keyframes flipAnim {
+        0% {
+          transform: rotateX(0deg);
+        }
+        50% {
+          transform: rotateX(-90deg);
+        }
+        100% {
+          transform: rotateX(0deg);
+        }
       }
 
       #motivation {
-        font-style: italic;
-        margin-bottom: 18px;
-        opacity: 0.75;
-        color: #9ca3af;
-      }
-
-      h2 {
-        color: var(--gold);
-        margin-top: 28px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #000;
       }
 
       .milestones {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 8px;
-        margin-bottom: 22px;
+        gap: 12px;
+        margin-bottom: 25px;
       }
 
       .milestone {
-        padding: 6px 12px;
+        padding: 8px 16px;
+        border-radius: 14px;
         border: 1px solid var(--border);
-        border-radius: 10px;
         background: var(--panel);
-        font-size: 0.9em;
-        color: #d1d5db;
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur(12px);
+        font-size: 1em;
+        font-weight: 600;
+        color: #000;
       }
 
       .milestone.reached {
-        border-color: #10b981;
-        background: rgba(6, 42, 36, 0.9);
-        box-shadow: 0 0 6px rgba(16, 185, 129, 0.35);
-        color: #a7f3d0;
+        background: rgba(34, 197, 94, 0.15);
+        border: 1px solid rgba(34, 197, 94, 0.4);
       }
 
       .calendar-container {
@@ -118,52 +134,70 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 14px;
       }
 
       .calendar-header button {
         background: var(--panel);
-        color: var(--gold);
         border: 1px solid var(--border);
-        padding: 6px 14px;
-        border-radius: 8px;
-        font-weight: bold;
+        padding: 6px 16px;
+        border-radius: 10px;
         cursor: pointer;
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 600;
+        color: #000;
       }
 
       .calendar {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 6px;
+        gap: 8px;
       }
 
       .day {
-        padding: 7px;
+        padding: 10px;
+        border-radius: 12px;
         border: 1px solid var(--border);
-        border-radius: 8px;
         background: var(--panel);
-        font-size: 0.85em;
+        backdrop-filter: blur(12px);
+        font-size: 1em;
+        font-weight: 600;
         position: relative;
-        color: #d1d5db;
+        color: #000;
       }
 
       .day.completed {
-        background: rgba(6, 42, 36, 0.9);
-        box-shadow: 0 0 6px rgba(16, 185, 129, 0.3);
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.4);
       }
 
       .day.completed::after {
         content: "✔";
         position: absolute;
-        top: 2px;
-        right: 4px;
-        font-size: 0.7em;
-        color: #34d399;
+        top: 3px;
+        right: 6px;
+        font-size: 0.8em;
+        font-weight: bold;
       }
 
       .day.empty {
         background: transparent;
         border: none;
+      }
+
+      #catPic {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        width: 56px;
+        border-radius: 14px;
+        cursor: pointer;
+        opacity: 0.9;
+        transition: 0.3s ease;
+      }
+
+      #catPic:hover {
+        transform: scale(1.05);
       }
     </style>
   </head>
@@ -173,7 +207,14 @@
 
     <div class="daysPassed" id="daysPassed"></div>
     <p id="startDate"></p>
-    <div class="counter" id="counter">Loading...</div>
+
+    <div class="counter">
+      <div class="time-box" id="daysBox">0</div>
+      <div class="time-box" id="hoursBox">0</div>
+      <div class="time-box" id="minsBox">0</div>
+      <div class="time-box" id="secsBox">0</div>
+    </div>
+
     <p id="motivation"></p>
 
     <h2>Milestones</h2>
@@ -202,31 +243,21 @@
 
     <script>
       const startDate = new Date(2026, 1, 10, 0, 0, 0);
-
       const milestonesList = [
-        1,
-        5,
-        7,
-        10,
-        15,
-        30,
-        45,
-        60,
-        75,
-        90,
-        125,
-        150,
-        180,
-        ,
-        250,
-        300,
-        365,
+        1, 5, 7, 10, 15, 30, 45, 60, 75, 90, 125, 150, 180, 250, 300, 365,
       ];
-      const quotes = [""];
+      function pad(value) {
+        return String(value).padStart(2, "0");
+      }
 
       const daysPassedEl = document.getElementById("daysPassed");
       const startDateEl = document.getElementById("startDate");
       const milestonesContainer = document.getElementById("milestones");
+
+      const daysBox = document.getElementById("daysBox");
+      const hoursBox = document.getElementById("hoursBox");
+      const minsBox = document.getElementById("minsBox");
+      const secsBox = document.getElementById("secsBox");
 
       startDateEl.textContent =
         "Start Date: " +
@@ -242,6 +273,15 @@
 
       let currentMonth = new Date().getMonth();
       let currentYear = new Date().getFullYear();
+
+      function flipUpdate(element, newValue) {
+        if (element.textContent != newValue) {
+          element.classList.remove("flip");
+          void element.offsetWidth;
+          element.textContent = newValue;
+          element.classList.add("flip");
+        }
+      }
 
       function renderCalendar(month, year, daysCompleted) {
         const cal = document.getElementById("calendar");
@@ -277,8 +317,7 @@
           }
 
           if (date.toDateString() === today.toDateString()) {
-            cell.style.border = "2px solid var(--gold)";
-            cell.style.boxShadow = "0 0 10px var(--gold-soft)";
+            cell.style.border = "2px solid #000";
           }
 
           cal.appendChild(cell);
@@ -295,9 +334,12 @@
         const mins = Math.floor((diff / 1000 / 60) % 60);
         const secs = Math.floor((diff / 1000) % 60);
 
-        daysPassedEl.textContent = `It's been ${days} day(s)!!`;
-        counter.textContent = `${days}:${hours}:${mins}:${secs}`;
-        motivation.textContent = quotes[0];
+        daysPassedEl.textContent = `It's been ${days} day(s)!`;
+
+        flipUpdate(daysBox, pad(days));
+        flipUpdate(hoursBox, pad(hours));
+        flipUpdate(minsBox, pad(mins));
+        flipUpdate(secsBox, pad(secs));
 
         milestonesList.forEach((d) => {
           if (days >= d) {
@@ -312,7 +354,6 @@
         currentMonth--;
         updateCounter();
       };
-
       nextMonth.onclick = () => {
         currentMonth++;
         updateCounter();
@@ -320,10 +361,6 @@
 
       setInterval(updateCounter, 1000);
       updateCounter();
-
-      document.getElementById("catPic").onclick = () => {
-        window.location.href = "calm.html";
-      };
     </script>
   </body>
 </html>
