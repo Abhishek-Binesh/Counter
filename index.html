@@ -42,13 +42,11 @@
         }
       }
 
-      /* MAIN WRAPPER */
       .app-wrapper {
         width: 100%;
         max-width: 430px;
       }
 
-      /* MAIN CARD */
       .app {
         background: rgba(255, 255, 255, 0.4);
         backdrop-filter: blur(20px);
@@ -59,18 +57,16 @@
         text-align: center;
       }
 
-      /* ICON */
       #catPic {
         position: absolute;
-        top: 10px; /* distance from top */
-        left: 10px; /* distance from left */
+        top: 10px;
+        left: 10px;
         width: 50px;
         border-radius: 14px;
         cursor: pointer;
-        z-index: 1000; /* keeps it above everything */
+        z-index: 1000;
       }
 
-      /* TEXT */
       .daysPassed {
         font-size: 1.6em;
         font-weight: 700;
@@ -80,7 +76,6 @@
         margin: 18px 0 10px;
       }
 
-      /* COUNTER */
       .counter {
         display: flex;
         gap: 10px;
@@ -95,9 +90,28 @@
         padding: 15px 0;
         font-size: 1.5em;
         font-weight: 700;
+        perspective: 600px;
+        transform-style: preserve-3d;
+        backface-visibility: hidden;
       }
 
-      /* MILESTONES */
+      .flip {
+        animation: flipAnim 0.6s ease;
+        backface-visibility: hidden;
+      }
+
+      @keyframes flipAnim {
+        0% {
+          transform: rotateX(0deg);
+        }
+        50% {
+          transform: rotateX(-90deg);
+        }
+        100% {
+          transform: rotateX(0deg);
+        }
+      }
+
       .milestones {
         display: flex;
         flex-wrap: wrap;
@@ -119,7 +133,6 @@
         border: 1px solid rgba(34, 197, 94, 0.6);
       }
 
-      /* CALENDAR WRAPPER */
       .calendar-wrapper {
         border: 1px solid var(--border);
         border-radius: 18px;
@@ -127,7 +140,6 @@
         background: rgba(255, 255, 255, 0.6);
       }
 
-      /* HEADER */
       .calendar-header {
         display: flex;
         justify-content: space-between;
@@ -143,7 +155,6 @@
         cursor: pointer;
       }
 
-      /* WEEKDAYS + CALENDAR GRID */
       .weekdays,
       .calendar {
         display: grid;
@@ -173,7 +184,6 @@
         border: none;
       }
 
-      /* MOBILE TWEAK */
       @media (max-width: 350px) {
         .time-box {
           font-size: 1.2em;
@@ -256,6 +266,15 @@
         return String(v).padStart(2, "0");
       }
 
+      function flipUpdate(element, value) {
+        if (element.textContent !== value) {
+          element.classList.remove("flip");
+          void element.offsetWidth;
+          element.textContent = value;
+          element.classList.add("flip");
+        }
+      }
+
       function renderCalendar(month, year, daysCompleted) {
         const cal = document.getElementById("calendar");
         cal.innerHTML = "";
@@ -263,7 +282,10 @@
         document.getElementById("monthLabel").textContent = new Date(
           year,
           month,
-        ).toLocaleString("default", { month: "long", year: "numeric" });
+        ).toLocaleString("default", {
+          month: "long",
+          year: "numeric",
+        });
 
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -303,10 +325,10 @@
 
         daysPassedEl.textContent = `It's been ${days} day(s)!`;
 
-        daysBox.textContent = pad(days);
-        hoursBox.textContent = pad(hours);
-        minsBox.textContent = pad(mins);
-        secsBox.textContent = pad(secs);
+        flipUpdate(daysBox, pad(days));
+        flipUpdate(hoursBox, pad(hours));
+        flipUpdate(minsBox, pad(mins));
+        flipUpdate(secsBox, pad(secs));
 
         milestonesList.forEach((d) => {
           if (days >= d)
