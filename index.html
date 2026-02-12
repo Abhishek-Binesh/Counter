@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Day Counter</title>
 
-    <!-- Elegant Serif Font -->
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap"
       rel="stylesheet"
@@ -13,25 +12,22 @@
 
     <style>
       :root {
-        --panel: rgba(255, 255, 255, 0.7);
+        --panel: rgba(255, 255, 255, 0.85);
         --border: rgba(0, 0, 0, 0.08);
-
         --bg1: #fbc2eb;
         --bg2: #a6c1ee;
         --bg3: #fdfbfb;
       }
 
       body {
-        font-family: "Cormorant Garamond", serif;
-        text-align: center;
         margin: 0;
-        padding: 25px;
-        color: #000;
-        letter-spacing: 0.5px;
-
+        font-family: "Cormorant Garamond", serif;
         background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
         background-size: 300% 300%;
         animation: breatheBg 20s ease-in-out infinite;
+        display: flex;
+        justify-content: center;
+        padding: 20px 10px;
       }
 
       @keyframes breatheBg {
@@ -46,138 +42,130 @@
         }
       }
 
-      h2,
-      h3 {
-        font-weight: 700;
-        color: #000;
-        letter-spacing: 1px;
+      /* MAIN WRAPPER */
+      .app-wrapper {
+        width: 100%;
+        max-width: 430px;
       }
 
+      /* MAIN CARD */
+      .app {
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border);
+        border-radius: 28px;
+        padding: 22px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        text-align: center;
+      }
+
+      /* ICON */
+      #catPic {
+        position: absolute;
+        top: 10px; /* distance from top */
+        left: 10px; /* distance from left */
+        width: 50px;
+        border-radius: 14px;
+        cursor: pointer;
+        z-index: 1000; /* keeps it above everything */
+      }
+
+      /* TEXT */
       .daysPassed {
         font-size: 1.6em;
         font-weight: 700;
-        color: #000;
       }
 
+      h2 {
+        margin: 18px 0 10px;
+      }
+
+      /* COUNTER */
       .counter {
         display: flex;
-        justify-content: center;
-        gap: 14px;
+        gap: 10px;
         margin: 20px 0;
       }
 
       .time-box {
+        flex: 1;
         background: var(--panel);
-        backdrop-filter: blur(12px);
-        padding: 16px 20px;
-        border-radius: 16px;
-        font-size: 1.8em;
-        font-weight: 700;
-        min-width: 70px;
         border: 1px solid var(--border);
-        perspective: 600px;
-        color: #000;
+        border-radius: 16px;
+        padding: 15px 0;
+        font-size: 1.5em;
+        font-weight: 700;
       }
 
-      .flip {
-        animation: flipAnim 0.6s ease;
-      }
-
-      @keyframes flipAnim {
-        0% {
-          transform: rotateX(0deg);
-        }
-        50% {
-          transform: rotateX(-90deg);
-        }
-        100% {
-          transform: rotateX(0deg);
-        }
-      }
-
-      #motivation {
-        margin-bottom: 20px;
-        font-weight: 600;
-        color: #000;
-      }
-
+      /* MILESTONES */
       .milestones {
         display: flex;
         flex-wrap: wrap;
+        gap: 8px;
         justify-content: center;
-        gap: 12px;
-        margin-bottom: 25px;
+        margin-bottom: 20px;
       }
 
       .milestone {
-        padding: 8px 16px;
+        padding: 6px 12px;
         border-radius: 14px;
-        border: 1px solid var(--border);
         background: var(--panel);
-        backdrop-filter: blur(12px);
-        font-size: 1em;
-        font-weight: 600;
-        color: #000;
+        border: 1px solid var(--border);
+        font-size: 0.85em;
       }
 
       .milestone.reached {
-        background: rgba(34, 197, 94, 0.15);
-        border: 1px solid rgba(34, 197, 94, 0.4);
+        background: rgba(34, 197, 94, 0.25);
+        border: 1px solid rgba(34, 197, 94, 0.6);
       }
 
-      .calendar-container {
-        max-width: 100%;
-        margin: auto;
+      /* CALENDAR WRAPPER */
+      .calendar-wrapper {
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.6);
       }
 
+      /* HEADER */
       .calendar-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 14px;
+        margin-bottom: 12px;
       }
 
       .calendar-header button {
         background: var(--panel);
         border: 1px solid var(--border);
-        padding: 6px 16px;
-        border-radius: 10px;
+        padding: 4px 12px;
+        border-radius: 8px;
         cursor: pointer;
-        font-family: "Cormorant Garamond", serif;
-        font-weight: 600;
-        color: #000;
       }
 
+      /* WEEKDAYS + CALENDAR GRID */
+      .weekdays,
       .calendar {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
+        gap: 6px;
+      }
+
+      .weekdays div {
+        font-weight: 700;
+        font-size: 0.8em;
       }
 
       .day {
-        padding: 10px;
-        border-radius: 12px;
+        padding: 8px 0;
+        border-radius: 10px;
         border: 1px solid var(--border);
         background: var(--panel);
-        backdrop-filter: blur(12px);
-        font-size: 1em;
-        font-weight: 600;
-        position: relative;
-        color: #000;
+        font-size: 0.8em;
       }
 
       .day.completed {
-        background: rgba(34, 197, 94, 0.12);
-        border: 1px solid rgba(34, 197, 94, 0.4);
-      }
-
-      .day.completed::after {
-        content: "✔";
-        position: absolute;
-        top: 3px;
-        right: 6px;
-        font-size: 0.8em;
-        font-weight: bold;
+        background: rgba(34, 197, 94, 0.25);
       }
 
       .day.empty {
@@ -185,85 +173,73 @@
         border: none;
       }
 
-      #catPic {
-        position: fixed;
-        top: 12px;
-        left: 12px;
-        width: 56px;
-        border-radius: 14px;
-        cursor: pointer;
-        opacity: 0.9;
-        transition: 0.3s ease;
-      }
-
-      #catPic:hover {
-        transform: scale(1.05);
+      /* MOBILE TWEAK */
+      @media (max-width: 350px) {
+        .time-box {
+          font-size: 1.2em;
+        }
+        .day {
+          font-size: 0.7em;
+        }
       }
     </style>
   </head>
 
   <body>
     <a href="calm.html">
-      <img src="music.jpg" id="catPic" alt="calm" />
+      <img src="music.jpg" id="catPic" />
     </a>
 
-    <div class="daysPassed" id="daysPassed"></div>
-    <p id="startDate"></p>
+    <div class="app-wrapper">
+      <div class="app">
+        <div class="daysPassed" id="daysPassed"></div>
+        <p id="startDate"></p>
 
-    <div class="counter">
-      <div class="time-box" id="daysBox">0</div>
-      <div class="time-box" id="hoursBox">0</div>
-      <div class="time-box" id="minsBox">0</div>
-      <div class="time-box" id="secsBox">0</div>
-    </div>
+        <div class="counter">
+          <div class="time-box" id="daysBox">00</div>
+          <div class="time-box" id="hoursBox">00</div>
+          <div class="time-box" id="minsBox">00</div>
+          <div class="time-box" id="secsBox">00</div>
+        </div>
 
-    <p id="motivation"></p>
+        <h2>Milestones</h2>
+        <div class="milestones" id="milestones"></div>
 
-    <h2>Milestones</h2>
-    <div class="milestones" id="milestones"></div>
+        <h2>Calendar</h2>
 
-    <h2>Calendar</h2>
-    <div class="calendar-container">
-      <div class="calendar-header">
-        <button id="prevMonth">&larr;</button>
-        <h3 id="monthLabel"></h3>
-        <button id="nextMonth">&rarr;</button>
+        <div class="calendar-wrapper">
+          <div class="calendar-header">
+            <button id="prevMonth">&larr;</button>
+            <h3 id="monthLabel"></h3>
+            <button id="nextMonth">&rarr;</button>
+          </div>
+
+          <div class="weekdays">
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+          </div>
+
+          <div class="calendar" id="calendar"></div>
+        </div>
       </div>
-
-      <div class="calendar">
-        <div class="day">Sun</div>
-        <div class="day">Mon</div>
-        <div class="day">Tue</div>
-        <div class="day">Wed</div>
-        <div class="day">Thu</div>
-        <div class="day">Fri</div>
-        <div class="day">Sat</div>
-      </div>
-
-      <div class="calendar" id="calendar"></div>
     </div>
 
     <script>
-      const startDate = new Date(2026, 1, 10, 0, 0, 0);
-      const milestonesList = [
-        1, 5, 7, 10, 15, 30, 45, 60, 75, 90, 125, 150, 180, 250, 300, 365,
-      ];
-      function pad(value) {
-        return String(value).padStart(2, "0");
-      }
+      const startDate = new Date(2026, 1, 10);
+      const milestonesList = [1, 5, 7, 10, 15, 30, 45, 60, 90, 180, 365];
 
       const daysPassedEl = document.getElementById("daysPassed");
-      const startDateEl = document.getElementById("startDate");
       const milestonesContainer = document.getElementById("milestones");
 
       const daysBox = document.getElementById("daysBox");
       const hoursBox = document.getElementById("hoursBox");
       const minsBox = document.getElementById("minsBox");
       const secsBox = document.getElementById("secsBox");
-
-      startDateEl.textContent =
-        "Start Date: " +
-        startDate.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
       milestonesList.forEach((d) => {
         const div = document.createElement("div");
@@ -276,13 +252,8 @@
       let currentMonth = new Date().getMonth();
       let currentYear = new Date().getFullYear();
 
-      function flipUpdate(element, newValue) {
-        if (element.textContent != newValue) {
-          element.classList.remove("flip");
-          void element.offsetWidth;
-          element.textContent = newValue;
-          element.classList.add("flip");
-        }
+      function pad(v) {
+        return String(v).padStart(2, "0");
       }
 
       function renderCalendar(month, year, daysCompleted) {
@@ -296,7 +267,6 @@
 
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const today = new Date();
 
         for (let i = 0; i < firstDay; i++) {
           const empty = document.createElement("div");
@@ -314,13 +284,8 @@
             (date - startDate) / (1000 * 60 * 60 * 24),
           );
 
-          if (diffDays >= 0 && diffDays < daysCompleted) {
+          if (diffDays >= 0 && diffDays < daysCompleted)
             cell.classList.add("completed");
-          }
-
-          if (date.toDateString() === today.toDateString()) {
-            cell.style.border = "2px solid #000";
-          }
 
           cal.appendChild(cell);
         }
@@ -338,26 +303,34 @@
 
         daysPassedEl.textContent = `It's been ${days} day(s)!`;
 
-        flipUpdate(daysBox, pad(days));
-        flipUpdate(hoursBox, pad(hours));
-        flipUpdate(minsBox, pad(mins));
-        flipUpdate(secsBox, pad(secs));
+        daysBox.textContent = pad(days);
+        hoursBox.textContent = pad(hours);
+        minsBox.textContent = pad(mins);
+        secsBox.textContent = pad(secs);
 
         milestonesList.forEach((d) => {
-          if (days >= d) {
+          if (days >= d)
             document.getElementById("milestone-" + d)?.classList.add("reached");
-          }
         });
 
         renderCalendar(currentMonth, currentYear, days);
       }
 
-      prevMonth.onclick = () => {
+      document.getElementById("prevMonth").onclick = () => {
         currentMonth--;
+        if (currentMonth < 0) {
+          currentMonth = 11;
+          currentYear--;
+        }
         updateCounter();
       };
-      nextMonth.onclick = () => {
+
+      document.getElementById("nextMonth").onclick = () => {
         currentMonth++;
+        if (currentMonth > 11) {
+          currentMonth = 0;
+          currentYear++;
+        }
         updateCounter();
       };
 
