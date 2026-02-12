@@ -3,39 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calm</title>
+    <title>Day Counter</title>
 
-    <!-- Elegant Serif Font -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
 
     <style>
       :root {
-        --panel: rgba(255, 255, 255, 0.7);
+        --panel: rgba(255, 255, 255, 0.75);
         --border: rgba(0, 0, 0, 0.08);
-
         --bg1: #fbc2eb;
         --bg2: #a6c1ee;
         --bg3: #fdfbfb;
       }
 
-      /* ---------- Background ---------- */
       body {
-        margin: 0;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-
         font-family: "Cormorant Garamond", serif;
-        color: #000;
-
+        margin: 0;
         background: linear-gradient(120deg, var(--bg1), var(--bg2), var(--bg3));
         background-size: 300% 300%;
         animation: breatheBg 20s ease-in-out infinite;
+        display: flex;
+        justify-content: center;
       }
 
       @keyframes breatheBg {
@@ -50,52 +41,41 @@
         }
       }
 
-      /* ---------- Start Overlay ---------- */
-      #startOverlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        display: flex;
-        align-items: center;
-        justify-content: center;
+      /* MOBILE CONTAINER */
+      .app {
+        width: 100%;
+        max-width: 420px;
+        padding: 20px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      h2,
+      h3 {
+        margin: 10px 0;
+      }
+
+      .daysPassed {
         font-size: 1.5em;
-        cursor: pointer;
-        z-index: 9999;
-        color: #fff;
-        letter-spacing: 1px;
+        font-weight: 700;
       }
 
-      /* ---------- Back Button ---------- */
-      .back-btn {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        padding: 10px 16px;
-        background: var(--panel);
-        backdrop-filter: blur(12px);
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        text-decoration: none;
-        font-weight: 600;
-        color: #000;
-      }
-
-      /* ---------- Stopwatch ---------- */
-      .stopwatch {
+      .counter {
         display: flex;
-        gap: 15px;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 20px 0;
       }
 
       .time-box {
+        flex: 1;
         background: var(--panel);
         backdrop-filter: blur(12px);
-        padding: 20px 24px;
+        padding: 15px 0;
         border-radius: 16px;
-        font-size: 2.2em;
+        font-size: 1.6em;
         font-weight: 700;
-        min-width: 80px;
         border: 1px solid var(--border);
-        perspective: 600px;
       }
 
       .flip {
@@ -103,83 +83,219 @@
       }
 
       @keyframes flipAnim {
-        0% {
-          transform: rotateX(0deg);
-        }
         50% {
           transform: rotateX(-90deg);
         }
-        100% {
-          transform: rotateX(0deg);
+      }
+
+      .milestones {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .milestone {
+        padding: 6px 12px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        font-size: 0.9em;
+      }
+
+      .milestone.reached {
+        background: rgba(34, 197, 94, 0.2);
+        border: 1px solid rgba(34, 197, 94, 0.5);
+      }
+
+      /* CALENDAR */
+      .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 10px 0;
+      }
+
+      .calendar-header button {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        padding: 4px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+      }
+
+      .day {
+        padding: 8px 0;
+        border-radius: 10px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        font-size: 0.85em;
+      }
+
+      .day.completed {
+        background: rgba(34, 197, 94, 0.2);
+      }
+
+      .day.empty {
+        background: transparent;
+        border: none;
+      }
+
+      #catPic {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        width: 50px;
+        border-radius: 12px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 350px) {
+        .time-box {
+          font-size: 1.3em;
+        }
+        .day {
+          font-size: 0.7em;
         }
       }
     </style>
   </head>
 
   <body>
-    <a href="index.html" class="back-btn">← Back</a>
+    <a href="calm.html">
+      <img src="music.jpg" id="catPic" />
+    </a>
 
-    <!-- Music -->
-    <audio id="calmSound" src="calm.mp3" loop></audio>
+    <div class="app">
+      <div class="daysPassed" id="daysPassed"></div>
+      <p id="startDate"></p>
 
-    <!-- Start Overlay -->
-    <div id="startOverlay">Tap anywhere to begin</div>
+      <div class="counter">
+        <div class="time-box" id="daysBox">00</div>
+        <div class="time-box" id="hoursBox">00</div>
+        <div class="time-box" id="minsBox">00</div>
+        <div class="time-box" id="secsBox">00</div>
+      </div>
 
-    <!-- Stopwatch -->
-    <div class="stopwatch">
-      <div class="time-box" id="hours">00</div>
-      <div class="time-box" id="minutes">00</div>
-      <div class="time-box" id="seconds">00</div>
+      <h2>Milestones</h2>
+      <div class="milestones" id="milestones"></div>
+
+      <h2>Calendar</h2>
+      <div class="calendar-header">
+        <button id="prevMonth">&larr;</button>
+        <h3 id="monthLabel"></h3>
+        <button id="nextMonth">&rarr;</button>
+      </div>
+
+      <div class="calendar" id="calendar"></div>
     </div>
 
     <script>
-      const audio = document.getElementById("calmSound");
-      const overlay = document.getElementById("startOverlay");
+      const startDate = new Date(2026, 1, 10);
+      const milestonesList = [1, 5, 7, 10, 15, 30, 45, 60, 90, 180, 365];
 
-      const hoursEl = document.getElementById("hours");
-      const minutesEl = document.getElementById("minutes");
-      const secondsEl = document.getElementById("seconds");
+      const daysPassedEl = document.getElementById("daysPassed");
+      const milestonesContainer = document.getElementById("milestones");
 
-      let seconds = 0;
-      let interval = null;
+      const daysBox = document.getElementById("daysBox");
+      const hoursBox = document.getElementById("hoursBox");
+      const minsBox = document.getElementById("minsBox");
+      const secsBox = document.getElementById("secsBox");
 
-      /* Zero padding */
+      milestonesList.forEach((d) => {
+        const div = document.createElement("div");
+        div.className = "milestone";
+        div.id = "milestone-" + d;
+        div.textContent = d + " days";
+        milestonesContainer.appendChild(div);
+      });
+
+      let currentMonth = new Date().getMonth();
+      let currentYear = new Date().getFullYear();
+
       function pad(val) {
         return String(val).padStart(2, "0");
       }
 
-      /* Flip update */
-      function flipUpdate(element, value) {
-        if (element.textContent !== value) {
-          element.classList.remove("flip");
-          void element.offsetWidth;
-          element.textContent = value;
-          element.classList.add("flip");
+      function renderCalendar(month, year, daysCompleted) {
+        const cal = document.getElementById("calendar");
+        cal.innerHTML = "";
+
+        document.getElementById("monthLabel").textContent = new Date(
+          year,
+          month,
+        ).toLocaleString("default", { month: "long", year: "numeric" });
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        for (let i = 0; i < firstDay; i++) {
+          const empty = document.createElement("div");
+          empty.className = "day empty";
+          cal.appendChild(empty);
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          const cell = document.createElement("div");
+          cell.className = "day";
+          cell.textContent = d;
+
+          const date = new Date(year, month, d);
+          const diffDays = Math.floor(
+            (date - startDate) / (1000 * 60 * 60 * 24),
+          );
+
+          if (diffDays >= 0 && diffDays < daysCompleted) {
+            cell.classList.add("completed");
+          }
+
+          cal.appendChild(cell);
         }
       }
 
-      /* Start stopwatch */
-      function startStopwatch() {
-        interval = setInterval(() => {
-          seconds++;
+      function updateCounter() {
+        const now = new Date();
+        const diff = now - startDate;
+        if (diff < 0) return;
 
-          const hrs = Math.floor(seconds / 3600);
-          const mins = Math.floor((seconds % 3600) / 60);
-          const secs = seconds % 60;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / 1000 / 3600) % 24);
+        const mins = Math.floor((diff / 1000 / 60) % 60);
+        const secs = Math.floor((diff / 1000) % 60);
 
-          flipUpdate(hoursEl, pad(hrs));
-          flipUpdate(minutesEl, pad(mins));
-          flipUpdate(secondsEl, pad(secs));
-        }, 1000);
+        daysPassedEl.textContent = `It's been ${days} day(s)!`;
+
+        daysBox.textContent = pad(days);
+        hoursBox.textContent = pad(hours);
+        minsBox.textContent = pad(mins);
+        secsBox.textContent = pad(secs);
+
+        milestonesList.forEach((d) => {
+          if (days >= d)
+            document.getElementById("milestone-" + d)?.classList.add("reached");
+        });
+
+        renderCalendar(currentMonth, currentYear, days);
       }
 
-      /* Start on first tap */
-      overlay.addEventListener("click", () => {
-        audio.volume = 0.4;
-        audio.play();
-        startStopwatch();
-        overlay.remove();
-      });
+      prevMonth.onclick = () => {
+        currentMonth--;
+        updateCounter();
+      };
+      nextMonth.onclick = () => {
+        currentMonth++;
+        updateCounter();
+      };
+
+      setInterval(updateCounter, 1000);
+      updateCounter();
     </script>
   </body>
 </html>
