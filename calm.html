@@ -13,7 +13,7 @@
 
     <style>
       :root {
-        --panel: rgba(255, 255, 255, 0.7);
+        --panel: rgba(255, 255, 255, 0.75);
         --border: rgba(0, 0, 0, 0.08);
 
         --bg1: #fbc2eb;
@@ -21,7 +21,6 @@
         --bg3: #fdfbfb;
       }
 
-      /* ---------- Background ---------- */
       body {
         margin: 0;
         height: 100vh;
@@ -50,22 +49,7 @@
         }
       }
 
-      /* ---------- Start Overlay ---------- */
-      #startOverlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.45);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5em;
-        cursor: pointer;
-        z-index: 9999;
-        color: #fff;
-        letter-spacing: 1px;
-      }
-
-      /* ---------- Back Button ---------- */
+      /* Back Button */
       .back-btn {
         position: fixed;
         top: 20px;
@@ -80,67 +64,55 @@
         color: #000;
       }
 
-      /* ---------- Stopwatch ---------- */
-      .stopwatch {
-        display: flex;
-        gap: 15px;
-      }
-
-      .time-box {
+      /* Selection Panel */
+      .selection-box {
         background: var(--panel);
         backdrop-filter: blur(12px);
-        padding: 20px 24px;
-        border-radius: 16px;
-        font-size: 2.2em;
-        font-weight: 700;
-        min-width: 80px;
+        padding: 40px 50px;
+        border-radius: 20px;
         border: 1px solid var(--border);
-        perspective: 600px;
+        text-align: center;
       }
 
-      .flip {
-        animation: flipAnim 0.6s ease;
+      .selection-box h2 {
+        margin-bottom: 25px;
+        font-size: 2em;
       }
 
-      @keyframes flipAnim {
-        0% {
-          transform: rotateX(0deg);
-        }
-        50% {
-          transform: rotateX(-90deg);
-        }
-        100% {
-          transform: rotateX(0deg);
-        }
+      .btn {
+        display: inline-block;
+        margin: 10px;
+        padding: 12px 24px;
+        font-size: 1.2em;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: #fff;
+        cursor: pointer;
+        transition: all 0.3s ease;
       }
-      /* ===== Mobile Optimization ===== */
+
+      .btn:hover {
+        transform: translateY(-3px);
+      }
+
+      .message {
+        margin-top: 20px;
+        font-size: 1.2em;
+        opacity: 0.8;
+      }
 
       @media (max-width: 480px) {
-        body {
-          padding: 20px;
+        .selection-box {
+          padding: 30px 25px;
         }
 
-        .stopwatch {
-          gap: 10px;
+        .selection-box h2 {
+          font-size: 1.5em;
         }
 
-        .time-box {
-          padding: 16px 14px;
-          font-size: 1.8em;
-          min-width: 65px;
-        }
-
-        .back-btn {
-          top: 12px;
-          left: 12px;
-          padding: 8px 12px;
-          font-size: 0.9em;
-        }
-
-        #startOverlay {
-          font-size: 1.2em;
-          text-align: center;
-          padding: 20px;
+        .btn {
+          font-size: 1em;
+          padding: 10px 18px;
         }
       }
     </style>
@@ -149,67 +121,43 @@
   <body>
     <a href="index.html" class="back-btn">← Back</a>
 
-    <!-- Music -->
-    <audio id="calmSound" src="calm.mp3" loop></audio>
+    <!-- Audio -->
+    <audio id="calmAudio"></audio>
 
-    <!-- Start Overlay -->
-    <div id="startOverlay">Tap anywhere to begin</div>
-
-    <!-- Stopwatch -->
-    <div class="stopwatch">
-      <div class="time-box" id="hours">00</div>
-      <div class="time-box" id="minutes">00</div>
-      <div class="time-box" id="seconds">00</div>
+    <!-- Selection -->
+    <div class="selection-box" id="selectionBox">
+      <h2>How long would you like to meditate?</h2>
+      <button class="btn" onclick="startMeditation(5)">5 Minutes</button>
+      <button class="btn" onclick="startMeditation(10)">10 Minutes</button>
+      <div class="message" id="endMessage"></div>
     </div>
 
     <script>
-      const audio = document.getElementById("calmSound");
-      const overlay = document.getElementById("startOverlay");
+      const audio = document.getElementById("calmAudio");
+      const selectionBox = document.getElementById("selectionBox");
+      const endMessage = document.getElementById("endMessage");
 
-      const hoursEl = document.getElementById("hours");
-      const minutesEl = document.getElementById("minutes");
-      const secondsEl = document.getElementById("seconds");
-
-      let seconds = 0;
-      let interval = null;
-
-      /* Zero padding */
-      function pad(val) {
-        return String(val).padStart(2, "0");
-      }
-
-      /* Flip update */
-      function flipUpdate(element, value) {
-        if (element.textContent !== value) {
-          element.classList.remove("flip");
-          void element.offsetWidth;
-          element.textContent = value;
-          element.classList.add("flip");
+      function startMeditation(minutes) {
+        // Choose correct file
+        if (minutes === 5) {
+          audio.src = "calm1.mp3";
+        } else {
+          audio.src = "calm2.mp3";
         }
-      }
 
-      /* Start stopwatch */
-      function startStopwatch() {
-        interval = setInterval(() => {
-          seconds++;
-
-          const hrs = Math.floor(seconds / 3600);
-          const mins = Math.floor((seconds % 3600) / 60);
-          const secs = seconds % 60;
-
-          flipUpdate(hoursEl, pad(hrs));
-          flipUpdate(minutesEl, pad(mins));
-          flipUpdate(secondsEl, pad(secs));
-        }, 1000);
-      }
-
-      /* Start on first tap */
-      overlay.addEventListener("click", () => {
-        audio.volume = 1;
+        audio.loop = false;
         audio.play();
-        startStopwatch();
-        overlay.remove();
-      });
+
+        // Hide buttons after selection
+        selectionBox.querySelector("h2").textContent =
+          `Meditation started (${minutes} minutes)`;
+        selectionBox.querySelectorAll(".btn").forEach((btn) => btn.remove());
+
+        // When audio ends
+        audio.addEventListener("ended", () => {
+          endMessage.textContent = "Session complete. Breathe gently.";
+        });
+      }
     </script>
   </body>
 </html>
