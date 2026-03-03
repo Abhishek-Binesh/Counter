@@ -57,16 +57,6 @@
         text-align: center;
       }
 
-      #catPic {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        width: 50px;
-        border-radius: 14px;
-        cursor: pointer;
-        z-index: 1000;
-      }
-
       .daysPassed {
         font-size: 1.6em;
         font-weight: 700;
@@ -196,10 +186,6 @@
   </head>
 
   <body>
-    <a href="calm.html">
-      <img src="music.jpg" id="catPic" />
-    </a>
-
     <div class="app-wrapper">
       <div class="app">
         <div class="daysPassed" id="daysPassed"></div>
@@ -240,7 +226,7 @@
     </div>
 
     <script>
-      const startDate = new Date(2026, 1, 25);
+      const startDate = new Date(2026, 2, 4);
       const milestonesList = [1, 5, 7, 10, 15, 30, 45, 60, 90, 180, 365];
 
       const daysPassedEl = document.getElementById("daysPassed");
